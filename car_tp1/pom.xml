@@ -4,10 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>akka-sample-main-java</artifactId>
+  <artifactId>car_tp1</artifactId>
   <groupId>com.typesafe.akka.samples</groupId>
-  <name>Akka Main in Java</name>
-  <version>empty</version>
+  <name>CAR_TP1</name>
+  <version>0.0</version>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
