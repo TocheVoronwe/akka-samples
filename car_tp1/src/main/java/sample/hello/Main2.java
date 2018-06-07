@@ -17,6 +17,8 @@ public class Main2 {
     public Terminator(ActorRef ref) {
       this.ref = ref;
       getContext().watch(ref);
+      Master master = new Master();
+      master.openFile();
     }
 
     @Override
