@@ -1,4 +1,4 @@
-package sample.hello;
+package sample.hello.actors;
 
 import akka.actor.AbstractActor;
 
