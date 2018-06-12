@@ -6,8 +6,9 @@ public class Main2 {
 
   public static void main(String[] args) {
     ActorSystem system = ActorSystem.create("Hello");
-    ActorRef a = system.actorOf(Props.create(HelloWorld.class), "helloWorld");
-    system.actorOf(Props.create(Terminator.class, a), "terminator");
+/*    ActorRef a = system.actorOf(Props.create(HelloWorld.class), "helloWorld");*/
+    ActorRef master = system.actorOf(Props.create(Master.class), "master");
+    system.actorOf(Props.create(Terminator.class, master), "terminator");
   }
 
   public static class Terminator extends AbstractLoggingActor {
@@ -17,8 +18,6 @@ public class Main2 {
     public Terminator(ActorRef ref) {
       this.ref = ref;
       getContext().watch(ref);
-      Master master = new Master();
-      master.openFile();
     }
 
     @Override

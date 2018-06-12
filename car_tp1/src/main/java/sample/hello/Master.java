@@ -1,6 +1,7 @@
 package sample.hello;
 
 import akka.actor.*;
+import akka.japi.pf.ReceiveBuilder;
 import sample.hello.service.ReadFilesService;
 
 import java.io.IOException;
@@ -13,12 +14,14 @@ public class Master extends AbstractActor{
 
     @Override
     public Receive createReceive() {
-        return null;
+
+        openFile();
+        return receiveBuilder().build();
     }
 
     public void openFile()
     {
-        Path path = Paths.get("D:\\Téléchargement\\bible.txt");
+        Path path = Paths.get("D:\\Download\\bible.txt");
         try
         {
             Stream<String> lines = readFilesService.readFileLine(path);
