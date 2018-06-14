@@ -3,6 +3,7 @@ package sample.hello.actors;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.actor.dsl.Creators;
 import sample.hello.service.ReadFilesService;
 
 import java.io.IOException;
@@ -41,6 +42,9 @@ public class Master extends AbstractActor{
         {
             Stream<String> lines = readFilesService.readFileLine(path);
             lines.forEach(this::sendToMappers);
+            mappers.get(0).tell(Reducer.msg.DISPLAY, ActorRef.noSender());
+            System.out.println("THE END");
+           // System.exit(1);
         }
         catch (IOException io)
         {
@@ -60,7 +64,6 @@ public class Master extends AbstractActor{
     @Override
     public void preStart()
     {
-/*        final ActorRef mapper = getContext().actorOf(Props.create(Mapper.class), "mapper");
-        mapper.tell(Greeter.Msg.GREET, self());*/
+
     }
 }

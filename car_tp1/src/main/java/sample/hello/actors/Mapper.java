@@ -21,7 +21,7 @@ public class Mapper extends AbstractActor {
     public Receive createReceive() {
         return receiveBuilder()
                 .match(String.class, this::separate)
-                .matchAny(System.out::println)
+                .matchEquals(Reducer.msg.DISPLAY, m -> this.showDictionnary())
                 .build();
     }
 
@@ -29,8 +29,13 @@ public class Mapper extends AbstractActor {
         String words[] = line.split("\\s+");
         for (String word : words) {
             int index = Math.abs(word.hashCode() % 4);
-            System.out.println(index);
             reducers.get(index).tell(word, ActorRef.noSender());
         }
+    }
+
+    private void showDictionnary() {
+        reducers.forEach(r -> {
+            r.tell(Reducer.msg.DISPLAY, ActorRef.noSender());
+        });
     }
 }
