@@ -1,37 +1,36 @@
 package sample.hello;
 
 import akka.actor.*;
+import akka.actor.dsl.Creators;
+import sample.hello.actors.Mapper;
 import sample.hello.actors.Master;
+import sample.hello.actors.Reducer;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main2 {
 
 
 
   public static void main(String[] args) {
-    ActorSystem system = ActorSystem.create("Hello");
-/*    ActorRef a = system.actorOf(Props.create(HelloWorld.class), "helloWorld");*/
-    //Master master = system.actorOf(Props.create(Master.class), "master");
-    //system.actorOf(Props.create(Terminator.class, master), "terminator");
-  }
+    final ActorSystem system = ActorSystem.create("car_tp1");
 
-  public static class Terminator extends AbstractLoggingActor {
+    final ActorRef reducer1 = system.actorOf(Props.create(Reducer.class));
+    final ActorRef reducer2 = system.actorOf(Props.create(Reducer.class));
+    final ActorRef reducer3 = system.actorOf(Props.create(Reducer.class));
+    final ActorRef reducer4 = system.actorOf(Props.create(Reducer.class));
+    List<ActorRef> reducers = Arrays.asList(reducer1, reducer2, reducer3, reducer4);
 
-    private final ActorRef ref;
+    final ActorRef mapper1 = system.actorOf(Mapper.props(reducers));
+    final ActorRef mapper2 = system.actorOf(Mapper.props(reducers));
+    final ActorRef mapper3 = system.actorOf(Mapper.props(reducers));
+    List<ActorRef> mappers = Arrays.asList(mapper1, mapper2, mapper3);
 
-    public Terminator(ActorRef ref) {
-      this.ref = ref;
-      getContext().watch(ref);
-    }
+    final ActorRef master = system.actorOf(Master.props(mappers));
 
-    @Override
-    public Receive createReceive() {
-      return receiveBuilder()
-        .match(Terminated.class, t -> {
-          log().info("{} has terminated, shutting down system", ref.path());
-          getContext().system().terminate();
-        })
-        .build();
-    }
+    master.tell("src/resources/text.txt", ActorRef.noSender());
   }
 
 }

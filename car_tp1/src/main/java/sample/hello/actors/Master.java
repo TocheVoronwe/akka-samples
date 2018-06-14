@@ -6,35 +6,56 @@ import akka.actor.Props;
 import sample.hello.Greeter;
 import sample.hello.service.ReadFilesService;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Stream;
+
 public class Master extends AbstractActor{
+    int i = 0;
     private ReadFilesService readFilesService = new ReadFilesService();
-    private final ActorRef mapper = getContext().actorOf(Props.create(Mapper.class), "mapper_1");
-    private final ActorRef mapper2 = getContext().actorOf(Props.create(Mapper.class), "mapper_2");
-    private final ActorRef mapper3 = getContext().actorOf(Props.create(Mapper.class), "mapper_3");
+    private final List<ActorRef> mappers;
+
+    static public Props props(List<ActorRef> mappers){
+       return Props.create(Master.class, new Master(mappers));
+    }
+
+    public Master(List<ActorRef> mappers)
+    {
+        this.mappers = mappers;
+    }
 
     @Override
     public Receive createReceive() {
 
         return receiveBuilder()
-                .matchAny(this::sendToMappers)
+                .match(String.class,
+                    this::openFile)
                 .build();
     }
 
-    private void sendToMappers(Object str)
+    private void openFile(String p)
     {
-        int val = str.hashCode();
-        switch (val % 3)
+        Path path = Paths.get(p);
+        try
         {
-            case 1:
-                mapper.tell(str, self());
-                break;
-            case 2:
-                mapper2.tell(str, self());
-                break;
-            case 3:
-                mapper3.tell(str, self());
-                break;
+            Stream<String> lines = readFilesService.readFileLine(path);
+            lines.forEach(this::sendToMappers);
         }
+        catch (IOException io)
+        {
+            io.printStackTrace();
+            System.err.println("File not reachable or readable");
+            System.exit(-1);
+        }
+    }
+
+    private void sendToMappers(String str)
+    {
+        mappers.get(i%3).tell(str, ActorRef.noSender());
+        ++i;
+
     }
 
     @Override

@@ -16,21 +16,7 @@ public class SendToMasters {
     ActorSystem system = ActorSystem.create("Hello");
     ActorRef master = system.actorOf(Props.create(Master.class), "master");
 
-    private ReadFilesService readFilesService = new ReadFilesService();
-    public void openFile()
-    {
-        Path path = Paths.get("D:\\Download\\bible.txt");
-        try
-        {
-            Stream<String> lines = readFilesService.readFileLine(path);
-            lines.forEach(this::sendToMappers);
-        }
-        catch (IOException io)
-        {
-            io.printStackTrace();
-            System.err.println("File not reachable or readable");
-        }
-    }
+
 
     private void sendToMappers(String toSend)
     {
