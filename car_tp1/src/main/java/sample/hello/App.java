@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Main2 {
+public class App {
 
 
 
@@ -30,7 +30,7 @@ public class Main2 {
 
     final ActorRef master = system.actorOf(Master.props(mappers));
 
-    master.tell("src/resources/text.txt", ActorRef.noSender());
+    master.tell("src\\main\\resources\\text.txt", ActorRef.noSender());
   }
 
 }

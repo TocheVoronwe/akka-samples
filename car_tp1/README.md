@@ -20,7 +20,7 @@ Start the application main class `sbt "runMain sample.hello.Main"`. In the log o
 
 If you need more control of the startup code than what is provided by `akka.Main` you can easily write your own main class such as [Main2.java](src/main/java/sample/hello/Main2.java).
 
-Try to run the `sample.hello.Main2` class by `sbt "runMain sample.hello.Main2"`.
+Try to run the `sample.hello.App` class by `sbt "runMain sample.hello.App"`.
 
 ## Run with Maven
 
@@ -30,5 +30,5 @@ You can run the main classes with `mvn` from a terminal window using the [Exec M
 
     mvn compile exec:java -Dexec.mainClass="akka.Main" -Dexec.args="sample.hello.HelloWorld"
 
-    mvn compile exec:java -Dexec.mainClass="sample.hello.Main2"
+    mvn compile exec:java -Dexec.mainClass="sample.hello.AppApp"
 

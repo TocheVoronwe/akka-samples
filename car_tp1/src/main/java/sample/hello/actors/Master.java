@@ -3,7 +3,6 @@ package sample.hello.actors;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
-import sample.hello.Greeter;
 import sample.hello.service.ReadFilesService;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ public class Master extends AbstractActor{
     private final List<ActorRef> mappers;
 
     static public Props props(List<ActorRef> mappers){
-       return Props.create(Master.class, new Master(mappers));
+       return Props.create(Master.class, () -> new Master(mappers));
     }
 
     public Master(List<ActorRef> mappers)
@@ -61,7 +60,7 @@ public class Master extends AbstractActor{
     @Override
     public void preStart()
     {
-        final ActorRef mapper = getContext().actorOf(Props.create(Mapper.class), "mapper");
-        mapper.tell(Greeter.Msg.GREET, self());
+/*        final ActorRef mapper = getContext().actorOf(Props.create(Mapper.class), "mapper");
+        mapper.tell(Greeter.Msg.GREET, self());*/
     }
 }

@@ -1,12 +1,13 @@
 package sample.hello.actors;
 
 import akka.actor.AbstractActor;
-import sample.hello.Greeter;
 
+import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Map;
 
 public class Reducer extends AbstractActor {
-    Map<String, Integer> dictionnary;
+    Map<String, Integer> dictionnary = new HashMap<>();
     @Override
     public Receive createReceive()
     {
