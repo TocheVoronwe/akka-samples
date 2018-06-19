@@ -12,19 +12,22 @@ import java.util.Arrays;
 import java.util.List;
 
 public class App {
-    public static final String MAPPER_PATH = "akka.tcp://MappersSystem@127.0.0.1:3002";
-    public static final String REDUCERS_PATH = "akka.tcp://ReducersSystem@127.0.0.1:3001";
+    public static final String MAPPER_PATH = "akka.tcp://MappersSystem@127.0.0.1:2552";
+    public static final String REDUCERS_PATH = "akka.tcp://ReducersSystem@127.0.0.1:2551";
 
     public static final int NB_MAPPERS = 3;
     public static final int NB_REDUCERS = 4;
 
 
     public static void main(String[] args) {
-        final ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("master"));
+        if (args.length == 0 && args[0].equals("master"))
+            startMasterSystem();
+        else if (args.length == 0 && args[0].equals("mapper"))
+            startMapperSystem();
     }
 
     public static void startMasterSystem() {
-        final ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("master"));
+        final ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("reducers"));
         final ActorRef master = system.actorOf(Master.props(), "master");
 
         for (int i = 0; i < NB_REDUCERS; i++)
