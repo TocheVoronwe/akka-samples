@@ -12,12 +12,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class App {
-
+  public static final String MASTER_PATH = "akka.tcp://MasterSystem@127.0.0.1:3001";
+  public static final String MAPPER_PATH = "akka.tcp://MappersSystem@127.0.0.1:3002";
 
 
   public static void main(String[] args) {
-    final String path = "akka.tcp://MasterSystem@127.0.0.1:2552/user/master";
-
     final ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("master"));
 
     final ActorRef reducer1 = system.actorOf(Props.create(Reducer.class));
@@ -31,8 +30,14 @@ public class App {
     final ActorRef mapper3 = system.actorOf(Mapper.props(reducers));
     List<ActorRef> mappers = Arrays.asList(mapper1, mapper2, mapper3);
 
-    final ActorRef master = system.actorOf(Master.props(mappers, path));
 
+
+  }
+
+  public static void startMasterSystem()
+  {
+    final ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("master"));
+    final ActorRef master = system.actorOf(Master.props(), ActorRef.noSender());
     master.tell("src\\main\\resources\\text.txt", ActorRef.noSender());
   }
 
