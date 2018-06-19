@@ -14,6 +14,10 @@ import java.util.List;
 public class App {
   public static final String MASTER_PATH = "akka.tcp://MasterSystem@127.0.0.1:3001";
   public static final String MAPPER_PATH = "akka.tcp://MappersSystem@127.0.0.1:3002";
+  public static final String EOF = "END OF FILE";
+
+  public static final int NB_MAPPERS = 3;
+  public static final int NB_REDUCERS = 4;
 
 
   public static void main(String[] args) {
@@ -39,6 +43,14 @@ public class App {
     final ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("master"));
     final ActorRef master = system.actorOf(Master.props(), ActorRef.noSender());
     master.tell("src\\main\\resources\\text.txt", ActorRef.noSender());
+  }
+
+  public static void startMapperSystem()
+  {
+    ActorSystem mapperSystem = ActorSystem.create("MapperSystem", ConfigFactory.load("mappers"));
+
+    for (int i = 0; i < NB_MAPPERS; i++)
+      mapperSystem.actorOf(Mapper.props(), "mapper_" + i);
   }
 
 }
