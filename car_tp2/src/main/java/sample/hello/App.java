@@ -10,7 +10,7 @@ import sample.hello.actors.Reducer;
 
 public class App {
     public static final String MAPPER_PATH = "akka.tcp://MappersSystem@127.0.0.1:2552";
-    public static final String REDUCERS_PATH = "akka.tcp://ReducersSystem@127.0.0.1:2551";
+    public static final String REDUCERS_PATH = "akka.tcp://ReducersSystem@127.0.0.1:2553";
 
     public static final int NB_MAPPERS = 3;
     public static final int NB_REDUCERS = 4;
