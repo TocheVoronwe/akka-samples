@@ -1,15 +1,12 @@
 package sample.hello;
 
-import akka.actor.*;
-import akka.actor.dsl.Creators;
+import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 import com.typesafe.config.ConfigFactory;
 import sample.hello.actors.Mapper;
 import sample.hello.actors.Master;
 import sample.hello.actors.Reducer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class App {
     public static final String MAPPER_PATH = "akka.tcp://MappersSystem@127.0.0.1:2552";
@@ -20,15 +17,17 @@ public class App {
 
 
     public static void main(String[] args) {
-        if (args.length == 0 && args[0].equals("master"))
+        System.out.println(args[0]);
+        if (args.length == 0 || args[0].equals("master"))
             startMasterSystem();
-        else if (args.length == 0 && args[0].equals("mapper"))
+        else if (args.length == 0 || args[0].equals("mapper"))
             startMapperSystem();
     }
 
     public static void startMasterSystem() {
-        final ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("reducers"));
-        final ActorRef master = system.actorOf(Master.props(), "master");
+        System.out.println("starting master");
+        ActorSystem system = ActorSystem.create("MasterSystem", ConfigFactory.load("reducers"));
+        ActorRef master = system.actorOf(Master.props(), "master");
 
         for (int i = 0; i < NB_REDUCERS; i++)
             system.actorOf(Reducer.props(), "reducer_" + i);
@@ -37,6 +36,8 @@ public class App {
     }
 
     public static void startMapperSystem() {
+        System.out.println("starting mapper");
+/*        ActorSystem mapperSystem = ActorSystem.create("MapperSystem", ConfigFactory.load("mappers"));*/
         ActorSystem mapperSystem = ActorSystem.create("MapperSystem", ConfigFactory.load("mappers"));
 
         for (int i = 0; i < NB_MAPPERS; i++)
