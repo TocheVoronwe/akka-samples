@@ -1,6 +1,7 @@
 package sample.hello.actors;
 
 import akka.actor.AbstractActor;
+import akka.actor.Props;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +10,12 @@ public class Reducer extends AbstractActor {
     public static enum msg {
         DISPLAY, END
     }
+
     Map<String, Integer> dictionnary = new HashMap<>();
+
+    static public Props props() {
+        return Props.create(Reducer.class, Reducer::new);
+    }
 
     @Override
     public Receive createReceive() {
@@ -26,11 +32,10 @@ public class Reducer extends AbstractActor {
             dictionnary.put(str, dictionnary.get(str) + 1);
     }
 
-    private void showDictionnary()
-    {
+    private void showDictionnary() {
         System.out.println("displaying dictionnary in reducer");
         dictionnary.forEach((word, count) -> {
-            System.out.println(word + " : " + count);
+            System.out.println(getSelf() + " : " + word + " : " + count);
         });
     }
 }

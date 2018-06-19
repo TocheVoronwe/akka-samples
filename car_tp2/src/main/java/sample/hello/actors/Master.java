@@ -16,39 +16,28 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class Master extends AbstractActor{
     int i = 0;
-    private Receive active;
     private ReadFilesService readFilesService = new ReadFilesService();
 
     static public Props props(){
-       return Props.create(Master.class, () -> new Master());
+       return Props.create(Master.class, Master::new);
     }
 
     private Master()
     {
     }
 
-
-    /*private void sendIdentifyRequest() {
-        getContext().actorSelection(App.MAPPER_PATH).tell(new Identify(path), self());
-        getContext()
-                .system()
-                .scheduler()
-                .scheduleOnce(Duration.create(3, SECONDS), self(),
-                        ReceiveTimeout.getInstance(), getContext().dispatcher(), self());
-    }*/
-
     @Override
     public Receive createReceive() {
 
         return receiveBuilder()
-                .matchEquals(App.EOF, l -> sendEOF())
+                .matchEquals(Reducer.msg.DISPLAY, l -> sendEOF())
                 .match(String.class, this::openFile).build();
     }
 
     private void sendEOF()
     {
         for (int m = 0; m < App.NB_MAPPERS; m++)
-            getContext().actorSelection(App.MAPPER_PATH + "/user/mapper_" + i % App.NB_MAPPERS).tell(App.EOF, getSelf());
+            getContext().actorSelection(App.MAPPER_PATH + "/user/mapper_" + i % App.NB_MAPPERS).tell(Reducer.msg.DISPLAY, getSelf());
     }
 
     private void openFile(String p)
@@ -58,9 +47,7 @@ public class Master extends AbstractActor{
         {
             Stream<String> lines = readFilesService.readFileLine(path);
             lines.forEach(this::sendToMappers);
-            //mappers.get(0).tell(Reducer.msg.DISPLAY, ActorRef.noSender());
             System.out.println("THE END");
-           // System.exit(1);
         }
         catch (IOException io)
         {

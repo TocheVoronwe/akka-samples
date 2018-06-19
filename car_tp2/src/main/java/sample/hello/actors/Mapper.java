@@ -2,40 +2,47 @@ package sample.hello.actors;
 
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
+import akka.actor.ActorSelection;
 import akka.actor.Props;
+import sample.hello.App;
 
 import java.util.List;
 
 public class Mapper extends AbstractActor {
-    private final List<ActorRef> reducers;
 
-    static public Props props(List<ActorRef> reducers) {
-        return Props.create(Mapper.class, () -> new Mapper(reducers));
+    static public Props props() {
+        return Props.create(Mapper.class, Mapper::new);
     }
 
-    public Mapper(List<ActorRef> actorRefs) {
-        this.reducers = actorRefs;
+    public Mapper() {
+
     }
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
                 .match(String.class, this::separate)
-                .matchEquals(Reducer.msg.DISPLAY, m -> this.showDictionnary())
+                /*.matchEquals(Reducer.msg.DISPLAY, m -> this.showDictionnary())*/
                 .build();
+    }
+
+    private ActorSelection getReducer(int i)
+    {
+        return getContext().actorSelection(App.REDUCERS_PATH + "/user/reducer_" + i);
     }
 
     private void separate(String line) {
         String words[] = line.split("\\s+");
         for (String word : words) {
-            int index = Math.abs(word.hashCode() % 4);
-            reducers.get(index).tell(word, ActorRef.noSender());
+            int index = Math.abs(word.hashCode() % App.NB_REDUCERS);
+            ActorSelection reducer = getReducer(index);
+            reducer.tell(word, getSelf());
         }
     }
 
-    private void showDictionnary() {
+/*    private void showDictionnary() {
         reducers.forEach(r -> {
             r.tell(Reducer.msg.DISPLAY, ActorRef.noSender());
         });
-    }
+    }*/
 }
