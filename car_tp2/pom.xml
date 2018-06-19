@@ -6,7 +6,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>car_tp2</artifactId>
   <groupId>com.typesafe.akka.samples</groupId>
-  <name>CAR_TP1</name>
+  <name>CAR_TP2</name>
   <version>0.0</version>
 
   <properties>
