@@ -18,10 +18,18 @@ public class Mapper extends AbstractActor {
         System.out.println("Created " + getSelf());
     }
 
+    private void sendEOF()
+    {
+        System.out.println("Mapper : display");
+        for (int m = 0; m < App.NB_REDUCERS; m++)
+            getReducer(m).tell(Reducer.msg.DISPLAY, getSelf());
+    }
+
     @Override
     public Receive createReceive() {
         return receiveBuilder()
                 .match(String.class, this::separate)
+                .matchEquals(Reducer.msg.DISPLAY, m -> this.sendEOF())
                 .build();
     }
 

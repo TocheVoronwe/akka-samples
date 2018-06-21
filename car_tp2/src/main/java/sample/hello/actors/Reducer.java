@@ -26,7 +26,6 @@ public class Reducer extends AbstractActor {
     }
 
     private void putInMap(String str) {
-        System.out.println("putting " + str + " in " + getSelf());
         if (!dictionnary.containsKey(str))
             dictionnary.put(str, 1);
         else
