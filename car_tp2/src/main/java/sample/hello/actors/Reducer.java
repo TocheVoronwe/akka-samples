@@ -20,12 +20,13 @@ public class Reducer extends AbstractActor {
     @Override
     public Receive createReceive() {
         return receiveBuilder()
-                .match(String.class, this::putInMap)
                 .matchEquals(msg.DISPLAY, m -> this.showDictionnary())
+                .match(String.class, this::putInMap)
                 .build();
     }
 
     private void putInMap(String str) {
+        System.out.println("putting " + str + " in " + getSelf());
         if (!dictionnary.containsKey(str))
             dictionnary.put(str, 1);
         else

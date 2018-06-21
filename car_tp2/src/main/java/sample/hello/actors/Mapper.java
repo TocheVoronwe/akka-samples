@@ -15,14 +15,13 @@ public class Mapper extends AbstractActor {
     }
 
     public Mapper() {
-
+        System.out.println("Created " + getSelf());
     }
 
     @Override
     public Receive createReceive() {
         return receiveBuilder()
                 .match(String.class, this::separate)
-                /*.matchEquals(Reducer.msg.DISPLAY, m -> this.showDictionnary())*/
                 .build();
     }
 
@@ -39,10 +38,4 @@ public class Mapper extends AbstractActor {
             reducer.tell(word, getSelf());
         }
     }
-
-/*    private void showDictionnary() {
-        reducers.forEach(r -> {
-            r.tell(Reducer.msg.DISPLAY, ActorRef.noSender());
-        });
-    }*/
 }

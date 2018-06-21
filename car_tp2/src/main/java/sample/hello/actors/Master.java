@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -36,8 +37,9 @@ public class Master extends AbstractActor{
 
     private void sendEOF()
     {
+        System.out.println("DISPLAY");
         for (int m = 0; m < App.NB_MAPPERS; m++)
-            getContext().actorSelection(App.MAPPER_PATH + "/user/mapper_" + i % App.NB_MAPPERS).tell(Reducer.msg.DISPLAY, getSelf());
+            getContext().actorSelection(App.REDUCERS_PATH + "/user/reducer_" + m % App.NB_MAPPERS).tell(Reducer.msg.DISPLAY, getSelf());
     }
 
     private void openFile(String p)
@@ -47,7 +49,7 @@ public class Master extends AbstractActor{
         {
             Stream<String> lines = readFilesService.readFileLine(path);
             lines.forEach(this::sendToMappers);
-            System.out.println("THE END");
+            TimeUnit.SECONDS.sleep(1);
         }
         catch (IOException io)
         {
@@ -55,6 +57,11 @@ public class Master extends AbstractActor{
             System.err.println("File not reachable or readable");
             System.exit(-1);
         }
+        catch (InterruptedException ie)
+        {
+            ie.printStackTrace();
+        }
+        sendEOF();
     }
 
     private void sendToMappers(String str)
