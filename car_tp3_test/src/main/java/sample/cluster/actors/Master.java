@@ -1,17 +1,23 @@
 package sample.cluster.actors;
 
 import akka.actor.AbstractActor;
+import akka.actor.ActorRef;
 import akka.actor.Props;
-import sample.hello.App;
-import sample.hello.service.ReadFilesService;
+import akka.cluster.Member;
+import sample.cluster.service.ReadFilesService;
+import sample.cluster.transformation.App;
+import sample.cluster.transformation.TransformationMessages;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class Master extends AbstractActor {
     int i = 0;
+    List<ActorRef> mappers = new ArrayList<>();
     private ReadFilesService readFilesService = new ReadFilesService();
 
     static public Props props() {
@@ -26,11 +32,15 @@ public class Master extends AbstractActor {
 
         return receiveBuilder()
                 .matchEquals(Reducer.msg.DISPLAY, l -> sendEOF())
+                .matchEquals(Reducer.msg.REGISTER, msg -> {
+                    getContext().watch(sender());
+                    mappers.add(sender());
+                })
                 .match(String.class, this::openFile).build();
     }
 
     private void sendEOF() {
-        getContext().actorSelection(App.MAPPER_PATH + "/user/mapper_" + i % App.NB_MAPPERS).tell(Reducer.msg.DISPLAY, getSelf());
+        mappers.get(i % App.NB_MAPPERS).forward(Reducer.msg.DISPLAY, getContext());
     }
 
     private void openFile(String p) {
@@ -46,8 +56,14 @@ public class Master extends AbstractActor {
         }
     }
 
+    private void register(Member member)
+    {
+        if (member.hasRole("mapper"))
+            getContext().actorSelection(member.address() + "/user/mapper").tell("", self());
+    }
+
     private void sendToMappers(String str) {
-        getContext().actorSelection(App.MAPPER_PATH + "/user/mapper_" + i % App.NB_MAPPERS).tell(str, getSelf());
+        mappers.get(i % App.NB_MAPPERS).forward(str, getContext());
         ++i;
     }
 }

@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class Reducer extends AbstractActor {
     public static enum msg {
-        DISPLAY, END
+        DISPLAY, END, REGISTER
     }
 
     Map<String, Integer> dictionnary = new HashMap<>();
