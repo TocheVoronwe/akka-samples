@@ -72,6 +72,7 @@ public class Master extends AbstractActor {
     }
 
     private void sendToMappers(String str) {
+        System.out.println("sending " + str + " to mapper_" + i % App.NB_MAPPERS);
         mappers.get(i % App.NB_MAPPERS).forward(str, getContext());
         ++i;
     }

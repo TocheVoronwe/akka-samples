@@ -30,9 +30,6 @@ public class StartMasters {
 
         ActorSystem system = ActorSystem.create("ClusterSystem", config);
 
-        for (int i = 0; i < NB_REDUCERS; i++)
-            system.actorOf(Reducer.props(), "reducer_" + i);
-
         final ActorRef master = system.actorOf(Props.create(Master.class), "master");
         final FiniteDuration interval = Duration.create(2, TimeUnit.SECONDS);
         final Timeout timeout = new Timeout(Duration.create(5, TimeUnit.SECONDS));
