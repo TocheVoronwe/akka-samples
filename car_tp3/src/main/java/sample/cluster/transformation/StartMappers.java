@@ -16,7 +16,7 @@ public class StartMappers {
                 .withFallback(ConfigFactory.load());
 
         ActorSystem system = ActorSystem.create("ClusterSystem", config);
-        system.actorOf(Props.create(Mapper.class, config), "mapper");
+        system.actorOf(Props.create(Mapper.class), "mapper");
     }
 
 }

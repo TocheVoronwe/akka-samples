@@ -11,7 +11,7 @@ public class App {
     // starting 2 frontend nodes and 3 backend nodes
     StartMappers.startMapper("2551" );
     StartMappers.startMapper("2552" );
-    StartMappers.startMapper("0");
-    StartMasters.startMasters("0");
+    StartMappers.startMapper("2553");
+    StartMasters.startMasters("2554");
   }
 }
