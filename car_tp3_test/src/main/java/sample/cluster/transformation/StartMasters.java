@@ -1,23 +1,18 @@
 package sample.cluster.transformation;
 
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
-
-import sample.cluster.actors.Master;
-import sample.cluster.transformation.TransformationMessages.TransformationJob;
-import scala.concurrent.ExecutionContext;
-import scala.concurrent.duration.Duration;
-import scala.concurrent.duration.FiniteDuration;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.dispatch.OnSuccess;
 import akka.util.Timeout;
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import sample.cluster.actors.Master;
+import scala.concurrent.ExecutionContext;
+import scala.concurrent.duration.Duration;
+import scala.concurrent.duration.FiniteDuration;
 
-import static akka.pattern.Patterns.ask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class StartMasters {
 
