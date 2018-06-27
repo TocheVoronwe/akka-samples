@@ -35,6 +35,8 @@ public class Master extends AbstractActor {
                 .matchEquals(Reducer.msg.REGISTER, msg -> {
                     getContext().watch(sender());
                     mappers.add(sender());
+                    sendFileToMappers();
+                    System.err.println("Mapper Logged");
                 })
                 .match(String.class, this::openFile).build();
     }
@@ -44,6 +46,7 @@ public class Master extends AbstractActor {
     }
 
     private void openFile(String p) {
+        System.out.println("//////////SENDING FILE/////////////");
         Path path = Paths.get(p);
         try {
             Stream<String> lines = readFilesService.readFileLine(path);
@@ -54,6 +57,12 @@ public class Master extends AbstractActor {
             System.err.println("File not reachable or readable");
             System.exit(-1);
         }
+    }
+
+    private void sendFileToMappers()
+    {
+        if (mappers.size() == App.NB_MAPPERS)
+            openFile("src\\main\\resources\\text.txt");
     }
 
     private void register(Member member)

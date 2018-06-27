@@ -43,6 +43,7 @@ public class Mapper extends AbstractActor {
                 .match(String.class, this::separate)
                 .matchEquals(Reducer.msg.DISPLAY, m -> this.sendEOF())
                 .match(ClusterEvent.MemberUp.class, mUp -> {
+                    System.err.println("Member up");
                     register(mUp.member());
                 })
                 .build();
@@ -70,8 +71,9 @@ public class Mapper extends AbstractActor {
     }
 
     void register(Member member) {
+        System.out.println("role : " + member.getRoles());
         if (member.hasRole("master"))
             getContext().actorSelection(member.address() + "/user/master").tell(
-                    BACKEND_REGISTRATION, self());
+                    Reducer.msg.REGISTER, self());
     }
 }
